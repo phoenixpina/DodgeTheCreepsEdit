@@ -33,7 +33,22 @@ func _on_start_timer_timeout():
 func _on_mob_timer_timeout():
 	# Create a new instance of the Mob scene.
 	var mob = mob_scene.instantiate()
+	
+	#This is what I am editing: Varying mob size spawning.
+	var random_scale = randf_range(0.3, 1.8)  # Random scale between 0.5x and 1.5x
+	mob.scale = Vector2(random_scale, random_scale)  # Applies the scale uniformly
+	var collision_shape = mob.get_node("CollisionShape2D") # Adjusts the collision shape's scale
+	if collision_shape: 
+		var shape = collision_shape.shape
+		if shape is CapsuleShape2D:
+			shape.radius *= random_scale
+			shape.height *= random_scale
+	
+	var sprite = mob.get_node("AnimatedSprite2D") #Adjusts animation sprite so it matches collision box
+	if sprite:
+		sprite.scale = Vector2(random_scale, random_scale) 
 
+	#Code from tutorial begins again here
 	# Choose a random location on Path2D.
 	var mob_spawn_location = $MobPath/MobSpawnLocation
 	mob_spawn_location.progress_ratio = randf()
